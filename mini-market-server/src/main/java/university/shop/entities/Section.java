@@ -16,7 +16,7 @@ public class Section implements Serializable{
     private String name;
     @Column(name = "DESCRIPTION")
     private String description;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "PRODUCT", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Product> products;
 
     public String getName() {

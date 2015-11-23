@@ -10,8 +10,8 @@ import university.shop.parsers.QueryParser;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
 import java.util.logging.Logger;
 
 @Path("/")
@@ -25,9 +25,9 @@ public class ShopController {
 
     @GET
     @Path("/api")
-    @Produces("application/json")
-    public void parseQuery(@QueryParam("query") String query) {
+    public Response parseQuery(@QueryParam("query") String query) {
         logger.info("Query: " + query);
         queryParser.parse();
+        return Response.ok().build();
     }
 }

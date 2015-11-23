@@ -18,7 +18,7 @@ public class Product {
     private double price;
     @Column(name = "PRODUCER_COUNTRY")
     private String producerCountry;
-    @JoinColumn(name = "CASCADE_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "SECTION_ID", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Section section;
 
