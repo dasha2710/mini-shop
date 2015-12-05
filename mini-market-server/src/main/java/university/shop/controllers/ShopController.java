@@ -45,22 +45,32 @@ public class ShopController {
     @Autowired
     private UpdateSectionQueryParser updateSectionQueryParser;
 
+    @Autowired
+    private AddProductQueryParser addProductQueryParser;
+
+    @Autowired
+    private UpdateProductQueryParser updateProductQueryParser;
+
     @GET
     @Path("/api")
     @Produces("application/json")
     public ResponseDto parseQuery(@QueryParam("query") String query) throws ApiException {
         logger.info("Query: " + query);
-        query = query.trim().toUpperCase();
+        query = query.trim().replaceAll("\\s+", " ").toUpperCase();
         ResponseDto dto = new ResponseDto();
-        if (query.startsWith("SELECT")) {
+        if (query.startsWith("SELECT ALL")) {
+            if (query.startsWith("SELECT ALL SECTIONS")) {
+                dto.sections = selectSectionQueryParser.parseSelectAll(query);
+            } else if (query.startsWith("SELECT ALL PRODUCTS FOR SECTION")) {
+                dto.products = selectProductQueryParser.parseSelectAll(query);
+            } else {
+                throw new BadRequestApiException("SELECT ALL query is incorrect. The name of entity was not recognized. Must be PRODUCTS or SECTIONS");
+            }
+        } else if (query.startsWith("SELECT")) {
             if (query.startsWith("SELECT PRODUCT")) {
                 dto.product = selectProductQueryParser.parse(query);
             } else if (query.startsWith("SELECT SECTION")) {
                 dto.section = selectSectionQueryParser.parse(query);
-            } else if (query.startsWith("SELECT ALL SECTIONS")) {
-                dto.sections = selectSectionQueryParser.parseSelectAll(query);
-            } else if (query.startsWith("SELECT ALL PRODUCTS FOR SECTION")) {
-                dto.products = selectProductQueryParser.parseSelectAll(query);
             } else {
                 throw new BadRequestApiException("SELECT query is incorrect. The name of entity was not recognized");
             }
@@ -70,7 +80,7 @@ public class ShopController {
             if (query.startsWith("ADD SECTION")) {
                 dto.message = addSectionQueryParser.parse(query);
             } else if (query.startsWith("ADD PRODUCT")){
-
+                dto.message = addProductQueryParser.parse(query);
             } else {
                 throw new BadRequestApiException("ADD query is incorrect. The name of entity was not recognized");
             }
@@ -78,10 +88,12 @@ public class ShopController {
             if (query.startsWith("UPDATE SECTION")) {
                 dto.message = updateSectionQueryParser.parse(query);
             } else if (query.startsWith("UPDATE PRODUCT")) {
-
+                dto.message = updateProductQueryParser.parse(query);
             } else {
                 throw new BadRequestApiException("UPDATE query is incorrect. The name of entity was not recognized");
             }
+        } else {
+            throw new BadRequestApiException("Unrecognizable query");
         }
         return dto;
     }
