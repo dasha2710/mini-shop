@@ -5,10 +5,11 @@ import javax.persistence.*;
 /**
  * Created by Dasha on 18.11.2015.
  */
-@Entity(name = "PRODUCT")
+@Entity
+@Table(name = "product")
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "CODE", nullable = false)
     private String code;

@@ -27,28 +27,28 @@ public class SelectProductQueryParserTest {
     public void shouldFindProductByTitle() throws BadRequestApiException {
         parser.parse("SELECT PRODUCT WITH TITLE TOY");
 
-        verify(productRepository).findByTitle("TOY");
+        verify(productRepository).findByTitleIgnoreCase("TOY");
     }
 
     @Test
     public void shouldFindProductByTitleAndCode() throws BadRequestApiException {
         parser.parse("SELECT PRODUCT WITH TITLE TOY CODE 11111");
 
-        verify(productRepository).findByCodeAndTitle("11111", "TOY");
+        verify(productRepository).findByCodeAndTitleIgnoreCase("11111", "TOY");
     }
 
     @Test
     public void shouldFindProductByTitleAndCodeInDifferentOrder() throws BadRequestApiException {
         parser.parse("SELECT PRODUCT WITH CODE 11111 TITLE TOY");
 
-        verify(productRepository).findByCodeAndTitle("11111", "TOY");
+        verify(productRepository).findByCodeAndTitleIgnoreCase("11111", "TOY");
     }
 
     @Test
     public void shouldFindProductByCode() throws BadRequestApiException {
         parser.parse("SELECT PRODUCT WITH CODE 11111");
 
-        verify(productRepository).findByCode("11111");
+        verify(productRepository).findByCodeIgnoreCase("11111");
     }
 
     @Test

@@ -2,6 +2,7 @@ package university.shop.parsers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import university.shop.dao.SectionRepository;
 import university.shop.entities.Section;
 import university.shop.exception.BadRequestApiException;
@@ -17,6 +18,7 @@ public class SelectSectionQueryParser {
     @Autowired
     private SectionRepository sectionRepository;
 
+    @Transactional
     public Section parse(String query) throws BadRequestApiException {
         String[] leksems = query.split(" ");
         if (leksems.length < 5) {
@@ -32,7 +34,7 @@ public class SelectSectionQueryParser {
             if (leksems.length > 5) {
                 throw new BadRequestApiException("Unknown leksem was found after '" + value + "'");
             }
-            return sectionRepository.findByName(value);
+            return sectionRepository.findByNameIgnoreCase(value);
         } else {
             throw new BadRequestApiException("Unknown filter was found '" + filter + "'. Must be only 'NAME' for 'SECTION'");
         }

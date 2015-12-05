@@ -28,7 +28,7 @@ public class SelectSectionQueryParserTest {
     public void shouldFindSectionByName() throws BadRequestApiException {
         parser.parse("SELECT SECTION WITH NAME TOYS");
 
-        verify(sectionRepository).findByName("TOYS");
+        verify(sectionRepository).findByNameIgnoreCase("TOYS");
     }
 
     @Test

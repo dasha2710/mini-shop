@@ -40,9 +40,9 @@ public class SelectProductQueryParser {
                         throw new BadRequestApiException("Unknown leksem was found after '" + value + "'");
                     }
                     if (filter.equals("CODE") && secondFilter.equals("TITLE")) {
-                        return productRepository.findByCodeAndTitle(value, secondValue);
+                        return productRepository.findByCodeAndTitleIgnoreCase(value, secondValue);
                     } else if (secondFilter.equals("CODE") && filter.equals("TITLE")) {
-                        return productRepository.findByCodeAndTitle(secondValue, value);
+                        return productRepository.findByCodeAndTitleIgnoreCase(secondValue, value);
                     } else {
                         throw new BadRequestApiException("Filters must be different");
                     }
@@ -51,9 +51,9 @@ public class SelectProductQueryParser {
                 }
             } else {
                 if (filter.equals("CODE")) {
-                    return productRepository.findByCode(value);
+                    return productRepository.findByCodeIgnoreCase(value);
                 } else {
-                    return productRepository.findByTitle(value);
+                    return productRepository.findByTitleIgnoreCase(value);
                 }
             }
         } else {
@@ -71,7 +71,7 @@ public class SelectProductQueryParser {
             throw new BadRequestApiException("SELECT ALL query must be only SELECT ALL SECTIONS or SELECT ALL PRODUCTS FOR SECTION aaaa");
         }
         String sectionName = leksems[5];
-        return productRepository.findBySectionName(sectionName);
+        return productRepository.findBySectionNameIgnoreCase(sectionName);
     }
 }
 

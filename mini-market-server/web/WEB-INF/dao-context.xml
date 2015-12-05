@@ -35,12 +35,8 @@
             </bean>
         </property>
         <property name="jpaProperties" ref="jpaProperties"/>
-        <property name="packagesToScan" ref="listOfPackagesToScan"/>
+        <property name="packagesToScan" value="university.shop.entities"/>
     </bean>
-
-    <utils:list id="listOfPackagesToScan">
-        <value>university.shop.*.entities</value>
-    </utils:list>
 
     <utils:properties id="jpaProperties">
         <prop key="hibernate.hbm2ddl.auto">validate</prop>
