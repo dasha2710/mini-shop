@@ -2,7 +2,7 @@
  * Copyright 2015 Musicqubed.com. All Rights Reserved.
  */
 
-package university.shop.controllers;
+package university.shop.endpoint;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 
 @Path("/")
 @Component
-public class ShopController {
+public class ShopEndPoint {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
@@ -52,7 +52,7 @@ public class ShopController {
     private UpdateProductQueryParser updateProductQueryParser;
 
     @GET
-    @Path("/api")
+    @Path("/dsl")
     @Produces("application/json")
     public ResponseDto parseQuery(@QueryParam("query") String query) throws ApiException {
         logger.info("Query: " + query);
@@ -64,7 +64,7 @@ public class ShopController {
             } else if (query.startsWith("SELECT ALL PRODUCTS FOR SECTION")) {
                 dto.products = selectProductQueryParser.parseSelectAll(query);
             } else {
-                throw new BadRequestApiException("SELECT ALL query is incorrect. The name of entity was not recognized. Must be PRODUCTS or SECTIONS");
+                throw new BadRequestApiException("SELECT ALL query is incorrect. Must be SELECT ALL PRODUCTS FOR SECTION **** or SELECT ALL SECTIONS");
             }
         } else if (query.startsWith("SELECT")) {
             if (query.startsWith("SELECT PRODUCT")) {
@@ -100,16 +100,26 @@ public class ShopController {
 
     @GET
     @Path("/export_to_csv")
-    @Produces("application/vnd.ms-excel")
-    public Response getFile() throws IOException {
+    @Produces({"application/vnd.ms-excel", "application/json"})
+    public Response getFile(@QueryParam("query") String query) throws IOException, ApiException {
+        File file;
+        logger.info("Query: " + query);
+        query = query.trim().replaceAll("\\s+", " ").toUpperCase();
+        if (query.startsWith("SELECT ALL")) {
+            if (query.startsWith("SELECT ALL SECTIONS")) {
+                file = exportService.exportSections(selectSectionQueryParser.parseSelectAll(query));
+            } else if (query.startsWith("SELECT ALL PRODUCTS FOR SECTION")) {
+                file = exportService.exportProducts(selectProductQueryParser.parseSelectAll(query));
+            } else {
+                throw new BadRequestApiException("SELECT ALL query is incorrect. Must be SELECT ALL PRODUCTS FOR SECTION **** or SELECT ALL SECTIONS");
+            }
 
-        File file = exportService.export();
-
-        Response.ResponseBuilder response = Response.ok((Object) file);
-        response.header("Content-Disposition",
-                "attachment; filename=products.xls");
-        return response.build();
-
+            Response.ResponseBuilder response = Response.ok((Object) file);
+            response.header("Content-Disposition",
+                    "attachment; filename=products.xls");
+            return response.build();
+        }
+        throw new BadRequestApiException("You could only export all sections or all product for the section");
     }
 
 }

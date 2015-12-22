@@ -1,9 +1,8 @@
 package university.shop.export;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import university.shop.dao.ProductRepository;
 import university.shop.entities.Product;
+import university.shop.entities.Section;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -20,22 +19,17 @@ public class ExportService {
     private static final String NEW_LINE_SEPARATOR = "\n";
 
     //CSV file header
-    private static final String FILE_HEADER = "code,title,price,producerCountry,section,sectionDescription";
+    private static final String FILE_HEADER_PRODUCT = "code,title,price,producerCountry,section,sectionDescription";
+    private static final String FILE_HEADER_SECTION = "name,description";
 
-    @Autowired
-    private ProductRepository productRepository;
-
-    public File export() throws IOException {
+    public File exportProducts(List<Product> products) throws IOException {
         try (FileWriter fileWriter = new FileWriter("G:/products.csv")) {
 
             //Write the CSV file header
-            fileWriter.append(FILE_HEADER.toString());
+            fileWriter.append(FILE_HEADER_PRODUCT.toString());
 
             //Add a new line separator after the header
             fileWriter.append(NEW_LINE_SEPARATOR);
-
-
-            List<Product> products = productRepository.findAll();
 
             for (Product product : products) {
                 fileWriter.append(product.getCode());
@@ -52,6 +46,25 @@ public class ExportService {
                 fileWriter.append(NEW_LINE_SEPARATOR);
             }
             return new File("G:/products.csv");
+        }
+    }
+
+    public File exportSections(List<Section> sections) throws IOException {
+        try (FileWriter fileWriter = new FileWriter("G:/sections.csv")) {
+
+            //Write the CSV file header
+            fileWriter.append(FILE_HEADER_SECTION.toString());
+
+            //Add a new line separator after the header
+            fileWriter.append(NEW_LINE_SEPARATOR);
+
+            for (Section section : sections) {
+                fileWriter.append(section.getName());
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(section.getDescription());
+                fileWriter.append(NEW_LINE_SEPARATOR);
+            }
+            return new File("G:/sections.csv");
         }
     }
 }

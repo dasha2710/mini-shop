@@ -43,14 +43,14 @@ public class UpdateProductQueryParser {
 
         Map<String, String> columnValueMap = ParserHelper.getValuesFromQuery(leksems, 4, COLUMN_NAMES);
         foundAndUpdateProduct(productCode, columnValueMap);
-        return "Section was successfully updated";
+        return "Product was successfully updated";
     }
 
     @Transactional
     private void foundAndUpdateProduct(String productCode, Map<String, String> columnValueMap) throws ApiException {
         Product product = productRepository.findByCodeIgnoreCase(productCode);
         if (product == null) {
-            throw new NotFoundApiException("The section with name " + productCode + " was not found");
+            throw new NotFoundApiException("The product with code " + productCode + " was not found");
         }
         String code = columnValueMap.get("CODE");
         if (code != null) {
@@ -73,7 +73,7 @@ public class UpdateProductQueryParser {
             product.setPrice(Integer.valueOf(price));
         }
         String producerCountry = columnValueMap.get("PRODUCER_COUNTRY");
-        if (price != null) {
+        if (producerCountry != null) {
             product.setProducerCountry(producerCountry);
         }
         productRepository.save(product);

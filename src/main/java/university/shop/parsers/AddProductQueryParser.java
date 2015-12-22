@@ -32,14 +32,18 @@ public class AddProductQueryParser {
         }
         String sectionName = leksems.get(3);
 
-        if (leksems.size() < 5) {
+        if (leksems.size() < 5 || !leksems.get(4).equals("WITH")) {
+            throw new BadRequestApiException("WITH was not found after section name");
+        }
+
+        if (leksems.size() < 6) {
             throw new BadRequestApiException("Was not found any values");
         }
 
-        Map<String, String> columnValueMap = ParserHelper.getValuesFromQuery(leksems, 4, COLUMN_NAMES);
+        Map<String, String> columnValueMap = ParserHelper.getValuesFromQuery(leksems, 5, COLUMN_NAMES);
 
         if (!columnValueMap.containsKey("TITLE") || !columnValueMap.containsKey("CODE")) {
-            throw new BadRequestApiException("Was not found requered values for columns TITLE and CODE");
+            throw new BadRequestApiException("Was not found required values for columns TITLE and CODE");
         }
 
         createAndSaveProduct(columnValueMap, sectionName);

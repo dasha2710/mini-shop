@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import university.shop.dao.ProductRepository;
+import university.shop.exception.ApiException;
 import university.shop.exception.BadRequestApiException;
 
 import static org.junit.Assert.assertEquals;
@@ -24,35 +25,35 @@ public class SelectProductQueryParserTest {
     private SelectProductQueryParser parser = new SelectProductQueryParser();
 
     @Test
-    public void shouldFindProductByTitle() throws BadRequestApiException {
+    public void shouldFindProductByTitle() throws ApiException {
         parser.parse("SELECT PRODUCT WITH TITLE TOY");
 
         verify(productRepository).findByTitleIgnoreCase("TOY");
     }
 
     @Test
-    public void shouldFindProductByTitleAndCode() throws BadRequestApiException {
+    public void shouldFindProductByTitleAndCode() throws ApiException {
         parser.parse("SELECT PRODUCT WITH TITLE TOY CODE 11111");
 
         verify(productRepository).findByCodeAndTitleIgnoreCase("11111", "TOY");
     }
 
     @Test
-    public void shouldFindProductByTitleAndCodeInDifferentOrder() throws BadRequestApiException {
+    public void shouldFindProductByTitleAndCodeInDifferentOrder() throws ApiException {
         parser.parse("SELECT PRODUCT WITH CODE 11111 TITLE TOY");
 
         verify(productRepository).findByCodeAndTitleIgnoreCase("11111", "TOY");
     }
 
     @Test
-    public void shouldFindProductByCode() throws BadRequestApiException {
+    public void shouldFindProductByCode() throws ApiException {
         parser.parse("SELECT PRODUCT WITH CODE 11111");
 
         verify(productRepository).findByCodeIgnoreCase("11111");
     }
 
     @Test
-    public void shouldFindProductByCodeFailsWhenFirstParameterIsAbsent() throws BadRequestApiException {
+    public void shouldFindProductByCodeFailsWhenFirstParameterIsAbsent() throws ApiException {
         try {
             parser.parse("SELECT PRODUCT WITH TITLE CODE 11111");
             fail("Should have thrown BadRequestException but did not!");
@@ -64,7 +65,7 @@ public class SelectProductQueryParserTest {
     }
 
     @Test
-    public void shouldFindProductByCodeFailsWhenParameterIsAbsent() throws BadRequestApiException {
+    public void shouldFindProductByCodeFailsWhenParameterIsAbsent() throws ApiException {
         try {
             parser.parse("SELECT PRODUCT WITH TITLE TOY CODE ");
             fail("Should have thrown BadRequestException but did not!");
@@ -76,7 +77,7 @@ public class SelectProductQueryParserTest {
     }
 
     @Test
-    public void shouldFindProductByCodeFailsThereAreLotOfParameters() throws BadRequestApiException {
+    public void shouldFindProductByCodeFailsThereAreLotOfParameters() throws ApiException {
         try {
             parser.parse("SELECT PRODUCT WITH TITLE TOY CODE 1111 AND");
             fail("Should have thrown BadRequestException but did not!");

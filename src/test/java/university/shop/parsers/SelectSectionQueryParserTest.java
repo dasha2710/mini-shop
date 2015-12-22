@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import university.shop.dao.SectionRepository;
+import university.shop.exception.ApiException;
 import university.shop.exception.BadRequestApiException;
 
 import static org.junit.Assert.assertEquals;
@@ -25,14 +26,14 @@ public class SelectSectionQueryParserTest {
     private SelectSectionQueryParser parser = new SelectSectionQueryParser();
 
     @Test
-    public void shouldFindSectionByName() throws BadRequestApiException {
+    public void shouldFindSectionByName() throws ApiException {
         parser.parse("SELECT SECTION WITH NAME TOYS");
 
         verify(sectionRepository).findByNameIgnoreCase("TOYS");
     }
 
     @Test
-    public void shouldFindSectionByNameFailsWhenParameterIsAbsent() {
+    public void shouldFindSectionByNameFailsWhenParameterIsAbsent() throws ApiException {
         try {
             parser.parse("SELECT SECTION WITH NAME");
             fail("Should have thrown BadRequestException but did not!");
@@ -45,7 +46,7 @@ public class SelectSectionQueryParserTest {
     }
 
     @Test
-    public void shouldFindSectionByNameFailsWhenFilterIsNotValid() throws BadRequestApiException {
+    public void shouldFindSectionByNameFailsWhenFilterIsNotValid() throws ApiException {
         try {
             parser.parse("SELECT SECTION WITH TITLE TOYS");
             fail("Should have thrown BadRequestException but did not!");
